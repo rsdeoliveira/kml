@@ -2,263 +2,46 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Visualizador de Pontos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+    <meta name="theme-color" content="#009fbd">
+    <meta name="description" content="Pesquise um ponto e abra sua localização no Google Maps.">
+    <title>Buscar ponto — Atlas</title>
     <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            background: #f4f6f8;
-        }
-        header {
-            background: linear-gradient(90deg, #004aad, #1e6fd2);
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .content {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-        #sidebar {
-            width: 320px;
-            padding: 15px;
-            overflow-y: auto;
-            background: #fff;
-            border-right: 1px solid #ddd;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-        }
-        #file-input-container {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 15px;
-        }
-        #file-input-container label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #333;
-        }
-        input[type="file"], input[type="text"] {
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.2s;
-        }
-        input[type="file"]:hover, input[type="text"]:hover {
-            border-color: #1e6fd2;
-        }
-        #cdc-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            flex: 1;
-        }
-        #cdc-list li {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.2s;
-            background: #f9f9f9;
-            margin-bottom: 6px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-        #cdc-list li:hover {
-            background: #e6f0ff;
-            transform: translateY(-2px);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-        }
-        .name {
-            font-weight: 600;
-            color: #004aad;
-        }
-        .coordinates {
-            font-size: 0.85em;
-            color: #555;
-        }
-        #map {
-            flex: 1;
-            background: #e0e0e0;
-        }
-        #loading {
-    display: none;   /* começa escondido */
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(255,255,255,0.8);
-    z-index: 9999;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: bold;
-    color: #004aad;
-    flex-direction: column;
-}
-</style>
+        :root{color-scheme:light;--ink:#173b4b;--muted:#687d86;--line:#dfe9ec;--green:#009fbd;--green-dark:#087e99;--mint:#e8f7fa;--bg:#f3f8f9;--accent:#f49a38}
+        *{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+        .topbar{height:72px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 10px #173b4b08}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:40px;height:40px;display:block;object-fit:cover;border-radius:10px}.brand-name{font-size:15px;font-weight:750;letter-spacing:-.25px;color:var(--ink)}.brand-caption{margin-top:3px;color:var(--muted);font-size:10px;letter-spacing:.25px}.header-right{display:flex;align-items:center;gap:18px}.service-tag{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px}.service-dot{width:7px;height:7px;border-radius:50%;background:#39a66d;box-shadow:0 0 0 3px #e7f5eb}.file-label{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid #d8e5e8;border-radius:8px;color:#315766;font-size:11px;font-weight:650;cursor:pointer;transition:.15s}.file-label:hover{border-color:#8ecbd6;background:#f2fbfc;color:#087e99}.file-label svg{width:15px;height:15px}#file-input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+        main{width:min(680px,calc(100% - 32px));margin:clamp(64px,12vh,120px) auto 60px}.intro{text-align:left;margin-bottom:26px;padding:0 6px}.eyebrow{display:flex;align-items:center;gap:9px;color:var(--green);font-size:10px;font-weight:750;letter-spacing:1.5px;text-transform:uppercase}.eyebrow:before{content:"";width:20px;height:3px;border-radius:2px;background:var(--accent)}.intro h1{margin:12px 0 9px;font-size:clamp(29px,5vw,39px);letter-spacing:-1.2px;color:var(--ink)}.intro p{margin:0;color:var(--muted);font-size:13px;line-height:1.65}.search-card{padding:22px;border:1px solid var(--line);border-radius:15px;background:#fff;box-shadow:0 8px 26px #173b4b0d}.search-label{display:block;margin:0 0 9px 2px;color:#355664;font-size:11px;font-weight:700}.search-wrap{position:relative}.search-icon{position:absolute;left:14px;top:14px;width:19px;height:19px;color:#82979e;pointer-events:none}.search{width:100%;height:50px;padding:0 15px 0 43px;border:1px solid #d7e3e6;border-radius:9px;outline:none;background:#fbfdfd;color:var(--ink);font:14px Inter,"Segoe UI",Arial,sans-serif;transition:.18s}.search::placeholder{color:#9aa9ad}.search:focus{border-color:#55b4c7;box-shadow:0 0 0 3px #e6f6f9}.file-status{min-height:17px;margin:10px 2px 0;color:var(--muted);font-size:10px}.results{margin-top:12px}.results-heading{padding:4px 3px 8px;color:#70858c;font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase}.result{display:flex;align-items:center;gap:12px;padding:13px 14px;margin-top:7px;border:1px solid var(--line);border-radius:10px;background:#fff;color:inherit;text-decoration:none;transition:transform .15s,border-color .15s,box-shadow .15s}.result:hover,.result:focus-visible{transform:translateY(-1px);border-color:#8ac9d4;box-shadow:0 4px 14px #173b4b12;outline:none}.result-pin{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:9px;background:var(--mint);color:var(--green)}.result-pin svg{width:18px;height:18px}.result-body{min-width:0;flex:1}.result-name{display:block;overflow:hidden;color:var(--ink);font-size:13px;font-weight:700;text-overflow:ellipsis;white-space:nowrap}.result-coords{display:block;margin-top:5px;color:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}.result-arrow{flex:none;color:#82969d;font-size:16px}.message{padding:17px 12px;text-align:center;color:var(--muted);font-size:11px;line-height:1.6}.message.error{color:#a24d40}.helper{margin:18px 0 0;text-align:left;padding-left:6px;color:#7f9096;font-size:10px;line-height:1.6}.toast{position:fixed;left:50%;bottom:22px;z-index:10;transform:translate(-50%,12px);padding:10px 15px;border-radius:9px;background:#173b4b;color:#fff;font-size:12px;opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+        @media(max-width:540px){body{min-height:100svh}.topbar{position:sticky;top:0;z-index:5;height:60px;padding:0 max(14px,env(safe-area-inset-left));}.brand{gap:9px}.brand-mark{width:34px;height:34px;border-radius:8px}.brand-caption{font-size:9px}.brand-name{font-size:14px}.header-right{gap:0}.service-tag{display:none}.file-label{min-height:40px;padding:8px 10px;font-size:10px;white-space:nowrap}.file-label svg{display:block;width:14px;height:14px}main{width:calc(100% - 28px);margin:42px auto calc(34px + env(safe-area-inset-bottom))}.intro{margin-bottom:19px;padding:0 2px}.eyebrow{font-size:9px;letter-spacing:1.2px}.intro h1{margin:9px 0 7px;font-size:30px;letter-spacing:-.9px}.intro p{font-size:12px;line-height:1.55}.desktop-break{display:none}.search-card{padding:16px 14px;border-radius:13px}.search-label{font-size:12px;margin-bottom:8px}.search{height:52px;padding-left:42px;font-size:16px;border-radius:9px}.search-icon{top:16px}.file-status{font-size:11px;line-height:1.45;margin-top:9px}.results{margin-top:13px}.results-heading{font-size:10px;padding-bottom:6px}.result{min-height:64px;gap:11px;padding:11px 10px;margin-top:7px;border-radius:10px}.result-pin{width:38px;height:38px}.result-name{font-size:13px}.result-coords{font-size:10px;line-height:1.4;overflow-wrap:anywhere}.result-arrow{font-size:19px;padding:6px}.message{padding:16px 7px;font-size:12px}.helper{margin:14px 2px 0;font-size:10px;line-height:1.5}}
+        @media(max-width:360px){.brand-caption{display:none}.brand-name{font-size:13px}.file-label{padding:8px;font-size:9px;gap:5px}.intro h1{font-size:27px}.search-card{padding:13px 11px}}
+        @media(min-width:541px) and (max-height:600px){main{margin-top:40px}}
+    </style>
 </head>
 <body>
-<header>Visualizador de Pontos</header>
-<div id="loading">
-    <div class="spinner"></div>
-    Carregando arquivo...
-</div>
-<div class="content">
-    <div id="sidebar">
-        <div id="file-input-container">
-            <label for="file-input">Selecione arquivos KML/KMZ:</label>
-            <input type="file" id="file-input" accept=".kml,.kmz" multiple>
-            <input type="text" id="search" placeholder="Pesquisar ponto...">
-        </div>
-        <ul id="cdc-list"></ul>
-    </div>
-    <div id="map"></div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
-<script>
-    let allFeatures = [];
-    const fileInput = document.getElementById('file-input');
-    const searchInput = document.getElementById('search');
-    const listContainer = document.getElementById('cdc-list');
-    const loadingOverlay = document.getElementById('loading');
-
-    fileInput.addEventListener('change', async (evt) => {
-        const files = evt.target.files;
-        if (files.length === 0) return;
-
-        allFeatures = [];
-        listContainer.innerHTML = '';
-
-        // Mostra carregando
-        loadingOverlay.style.display = 'flex';
-
-        try {
-            const readers = [];
-            for (const file of files) {
-                const ext = file.name.split('.').pop().toLowerCase();
-                if (ext === 'kmz') readers.push(readKMZ(file));
-                else if (ext === 'kml') readers.push(readKML(file));
-            }
-
-            const newFeatures = (await Promise.all(readers)).flat();
-            allFeatures = newFeatures;
-            renderList(allFeatures);
-
-            if (allFeatures.length === 0) alert("Nenhum ponto válido foi encontrado.");
-        } catch (err) {
-            alert("Erro ao carregar o arquivo: " + err.message);
-        } finally {
-            // Esconde carregando
-            loadingOverlay.style.display = 'none';
-        }
-    });
-
-    searchInput.addEventListener('input', () => {
-        const term = searchInput.value.toLowerCase();
-        renderList(allFeatures.filter(f => (f.name || '').toLowerCase().includes(term)));
-    });
-
-    function readKML(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = e => resolve(parseKML(e.target.result));
-            reader.onerror = reject;
-            reader.readAsText(file);
-        });
-    }
-
-    async function readKMZ(file) {
-        const zip = await JSZip.loadAsync(file);
-        const kmlFile = zip.file(/.kml$/i)[0];
-        if(kmlFile){
-            const kmlText = await kmlFile.async("text");
-            return parseKML(kmlText);
-        }
-        return [];
-    }
-
-    function parseKML(kmlText){
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(kmlText,"text/xml");
-        const placemarks = xmlDoc.getElementsByTagName("Placemark");
-        const features = [];
-        for(const placemark of placemarks){
-            const nameTag = placemark.getElementsByTagName("name")[0];
-            const coordinatesTag = placemark.getElementsByTagName("coordinates")[0];
-            if(nameTag && coordinatesTag){
-                const coords = coordinatesTag.textContent.trim().split(',');
-                const lon = parseFloat(coords[0]);
-                const lat = parseFloat(coords[1]);
-                if(!isNaN(lat) && !isNaN(lon)) features.push({name:nameTag.textContent, lat, lon});
-            }
-        }
-        return features;
-    }
-
-    function openInMaps(lat, lon){
-        const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
-        window.open(url,'_blank');
-    }
-
-    function tryFallbackCopy(text) {
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        textArea.style.position = "fixed";
-        textArea.style.top = "0";
-        textArea.style.left = "0";
-        textArea.style.opacity = "0";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-
-        try {
-            document.execCommand('copy');
-            alert("Coordenadas copiadas! Cole no seu app de mapas.");
-        } catch (err) {
-            alert("Não foi possível copiar automaticamente. As coordenadas são: " + text);
-        } finally {
-            document.body.removeChild(textArea);
-        }
-    }
-
-    function copyToClipboard(text){
-        if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert("Coordenadas copiadas! Cole no seu app de mapas.");
-            }).catch(() => {
-                tryFallbackCopy(text);
-            });
-        } else {
-            tryFallbackCopy(text);
-        }
-    }
-
-    function renderList(features){
-        listContainer.innerHTML='';
-        features.forEach((feature, index)=>{
-            const li = document.createElement('li');
-            li.innerHTML = `<span class="name">${feature.name || `Ponto ${index+1}`}</span><br><span class="coordinates">${feature.lat.toFixed(5)}, ${feature.lon.toFixed(5)}</span>`;
-            li.onclick = ()=>{
-                if(navigator.onLine){
-                    openInMaps(feature.lat, feature.lon);
-                } else {
-                    copyToClipboard(`${feature.lat},${feature.lon}`);
-                }
-            };
-            listContainer.appendChild(li);
-        });
-    }
-</script>
+    <header class="topbar">
+        <div class="brand"><img class="brand-mark" src="energisa-logo.jpg" alt="Símbolo Energisa"><div><div class="brand-name">Energisa Paraíba</div><div class="brand-caption">Consulta de pontos de rede</div></div></div>
+        <div class="header-right"><div class="service-tag"><span class="service-dot"></span>Consulta operacional</div><label class="file-label" for="file-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M5 14v5h14v-5"/></svg>Carregar KML/KMZ</label></div>
+        <input type="file" id="file-input" accept=".kml,.kmz,application/vnd.google-earth.kml+xml,application/vnd.google-earth.kmz" multiple aria-label="Carregar arquivos KML ou KMZ">
+    </header>
+    <main>
+        <section class="intro"><div class="eyebrow">Energisa Paraíba · Localização rápida</div><h1>Consulta de pontos</h1><p>Pesquise pelo código do ponto para consultar as coordenadas<br class="desktop-break"> e acessar sua localização no Google Maps.</p></section>
+        <section class="search-card" aria-label="Pesquisar ponto">
+            <label class="search-label" for="search">Código do ponto</label>
+            <div class="search-wrap"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><input class="search" id="search" type="search" placeholder="Ex.: PNT-001" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Digite o código do ponto" aria-controls="results"></div>
+            <div class="file-status" id="file-status" aria-live="polite">Carregue um arquivo KML ou KMZ para começar.</div>
+            <div class="results" id="results" aria-live="polite"></div>
+        </section>
+        <p class="helper">Selecione um resultado para abrir as coordenadas no Google Maps.</p>
+    </main>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" crossorigin="anonymous"></script>
+    <script>
+        const fileInput=document.getElementById('file-input'),searchInput=document.getElementById('search'),results=document.getElementById('results'),fileStatus=document.getElementById('file-status');let allFeatures=[],toastTimer;
+        fileInput.addEventListener('change',async event=>{const files=[...event.target.files];if(!files.length)return;fileInput.value='';fileStatus.textContent='Carregando arquivos…';try{const valid=files.filter(file=>/\.(kml|kmz)$/i.test(file.name));if(!valid.length)throw new Error('Selecione arquivos KML ou KMZ.');const parsed=await Promise.all(valid.map(async file=>({name:file.name,features:/\.kmz$/i.test(file.name)?await readKMZ(file):parseKML(await file.text())})));allFeatures=parsed.flatMap(({name,features})=>features.map(feature=>({...feature,source:name})));fileStatus.textContent=allFeatures.length?`${allFeatures.length} ${allFeatures.length===1?'ponto disponível':'pontos disponíveis'} em ${valid.length} ${valid.length===1?'arquivo':'arquivos'}`:'Nenhum ponto com coordenadas válidas foi encontrado.';renderResults();if(!allFeatures.length)showToast('Verifique se o KML contém pontos com coordenadas.')}catch(error){fileStatus.textContent='Não foi possível carregar os arquivos.';showToast(error.message||'Erro ao ler o arquivo.')}});
+        searchInput.addEventListener('input',renderResults);
+        async function readKMZ(file){if(!window.JSZip)throw new Error('Não foi possível iniciar o leitor KMZ. Confira sua conexão.');const zip=await JSZip.loadAsync(file),entry=Object.values(zip.files).find(item=>!item.dir&&/\.kml$/i.test(item.name));if(!entry)return[];return parseKML(await entry.async('text'))}
+        function parseKML(source){const xml=new DOMParser().parseFromString(source,'application/xml');if(xml.querySelector('parsererror'))throw new Error('Um dos arquivos KML parece inválido.');return[...xml.getElementsByTagNameNS('*','Placemark')].flatMap(place=>{const name=place.getElementsByTagNameNS('*','name')[0]?.textContent?.trim()||'Ponto sem nome',coordinates=place.getElementsByTagNameNS('*','Point')[0]?.getElementsByTagNameNS('*','coordinates')[0]?.textContent?.trim();if(!coordinates)return[];const[lon,lat]=coordinates.split(/[\s,]+/).map(Number);if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180)return[];return[{name,lat,lon}]})}
+        function renderResults(){const term=searchInput.value.trim().toLocaleLowerCase('pt-BR');results.replaceChildren();if(!term)return;if(!allFeatures.length){showMessage('Carregue um arquivo KML ou KMZ para pesquisar os pontos.');return}const matches=allFeatures.filter(point=>point.name.toLocaleLowerCase('pt-BR').includes(term));if(!matches.length){showMessage('Nenhum ponto encontrado com esse código.');return}const heading=document.createElement('div');heading.className='results-heading';heading.textContent=`${matches.length} ${matches.length===1?'resultado':'resultados'}`;results.append(heading);matches.slice(0,50).forEach(point=>{const link=document.createElement('a');link.className='result';link.href=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${point.lat},${point.lon}`)}`;link.target='_blank';link.rel='noopener noreferrer';link.setAttribute('aria-label',`Abrir ${point.name} no Google Maps`);link.innerHTML='<span class="result-pin" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span class="result-body"><span class="result-name"></span><span class="result-coords"></span></span><span class="result-arrow" aria-hidden="true">↗</span>';link.querySelector('.result-name').textContent=point.name;link.querySelector('.result-coords').textContent=`${point.lat.toFixed(5)}, ${point.lon.toFixed(5)} · ${point.source}`;results.append(link)});if(matches.length>50)showMessage('Exibindo os primeiros 50 resultados. Refine a busca pelo código.')}
+        function showMessage(text){const message=document.createElement('div');message.className='message';message.textContent=text;results.append(message)}function showToast(message){const toast=document.getElementById('toast');toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),3600)}
+    </script>
 </body>
 </html>
